@@ -91,15 +91,21 @@
                 return;
             }
 
+            // Retrieve stored users from local storage
+            const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+
             // Check if the username already exists
-            if (localStorage.getItem(username)) {
+            const existingUser  = storedUsers.find(user => user.username === username);
+
+            if (existingUser ) {
                 const suggestedUsername = suggestUsername(username);
                 alert(`Username is already taken. Suggested username: ${suggestedUsername}`);
                 return;
             }
 
-            // Store the user credentials in local storage
-            localStorage.setItem(username, JSON.stringify({ email, password, contact }));
+            // Add new user to the array
+            storedUsers.push({ email, username, password, contact });
+            localStorage.setItem('users', JSON.stringify(storedUsers));
 
             alert(`Sign up successful! You can now log in with your account.`);
             
@@ -122,7 +128,7 @@
         <input id="confirm-password" placeholder="Confirm Password" type="password" required/>
         <input id="contact" placeholder="Contact" type="text" required/>
         <button onclick="signUp()">Sign up</button>
-        <button onclick="returnToLogin()" style="margin-top: 10px;">Return</button>
+        <button onclick="returnToLogin()" style="margin-top: 10px;">Return to Login</button>
     </div>
 </body>
 </html>
