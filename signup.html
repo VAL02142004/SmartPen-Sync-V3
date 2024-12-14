@@ -52,6 +52,26 @@
         }
     </style>
     <script>
+        function isPasswordStrong(password) {
+            // Check for minimum length and at least one number and one uppercase letter
+            const minLength = 8;
+            const hasNumber = /\d/;
+            const hasUppercase = /[A-Z]/;
+
+            return password.length >= minLength && hasNumber.test(password) && hasUppercase.test(password);
+        }
+
+        function suggestUsername(username) {
+            // Suggest a new username by appending a number
+            let suggestion = username;
+            let count = 1;
+            while (localStorage.getItem(suggestion)) {
+                suggestion = username + count;
+                count++;
+            }
+            return suggestion;
+        }
+
         function signUp() {
             const email = document.getElementById('email').value;
             const username = document.getElementById('username').value;
@@ -59,21 +79,37 @@
             const confirmPassword = document.getElementById('confirm-password').value;
             const contact = document.getElementById('contact').value;
 
+            // Check if passwords match
             if (password !== confirmPassword) {
                 alert('Passwords do not match!');
                 return;
             }
 
+            // Check if the password is strong enough
+            if (!isPasswordStrong(password)) {
+                alert('Password must be at least 8 characters long and include at least one number and one uppercase letter.');
+                return;
+            }
+
+            // Check if the username already exists
+            if (localStorage.getItem(username)) {
+                const suggestedUsername = suggestUsername(username);
+                alert(`Username is already taken. Suggested username: ${suggestedUsername}`);
+                return;
+            }
+
             // Store the user credentials in local storage
-            localStorage.setItem('username', username);
-            localStorage.setItem('password', password);
-            localStorage.setItem('email', email); // Optional: Store email if needed
-            localStorage.setItem('contact', contact); // Optional: Store contact if needed
+            localStorage.setItem(username, JSON.stringify({ email, password, contact }));
 
             alert(`Sign up successful! You can now log in with your account.`);
             
             // Redirect to the login page
-            window.location.href = 'index.html'; // Change 'login.html' to the actual path of your login page
+            window.location.href = 'index.html'; // Change 'index.html' to the actual path of your login page
+        }
+
+        function returnToLogin() {
+            // Redirect to the login page
+            window.location.href = 'index.html'; // Change 'index.html' to the actual path of your login page
         }
     </script>
 </head>
@@ -86,6 +122,7 @@
         <input id="confirm-password" placeholder="Confirm Password" type="password" required/>
         <input id="contact" placeholder="Contact" type="text" required/>
         <button onclick="signUp()">Sign up</button>
+        <button onclick="returnToLogin()" style="margin-top: 10px;">Return</button>
     </div>
 </body>
 </html>
