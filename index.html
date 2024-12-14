@@ -14,11 +14,13 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // Retrieve stored credentials from local storage
-            const storedUsername = localStorage.getItem('username');
-            const storedPassword = localStorage.getItem('password');
+            // Retrieve stored users from local storage
+            const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
 
-            if (username === storedUsername && password === storedPassword) {
+            // Check if the username and password match any stored user
+            const user = storedUsers.find(user => user.username === username && user.password === password);
+
+            if (user) {
                 // Redirect to the dashboard page
                 window.location.href = 'dashboard.html'; // Change 'dashboard.html' to the actual path of your dashboard page
             } else {
@@ -52,7 +54,7 @@
                 <button onclick="signUp()" type="button" style="width: 45%; padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Sign Up</button>
             </div>
             <div style="margin-top: 10px;">
-             <button onclick="forgot()" type="button" style="width: 100%; padding: 10px; margin-top: 10px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Forgot Username/Password?</button>
+                <button onclick="forgot()" type="button" style="width: 100%; padding: 10px; margin-top: 10px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Forgot Username/Password?</button>
             </div>
         </div>
     </div>
