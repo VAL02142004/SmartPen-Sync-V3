@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPen Sync - Sign Up</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0; /* Light background color */
+            font-family: Arial, sans-serif; /* Set a default font */
+        }
+        .signup-container {
+            border: 2px solid #f28b82;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            background-color: #fff; /* White background for the form */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            text-align: center;
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #f28b82;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            width: 50%;
+            padding: 10px;
+            background-color: #f28b82;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Smooth transition for hover effect */
+        }
+        button:hover {
+            background-color: #d16f6f; /* Darker shade on hover */
+        }
+    </style>
+    <script>
+        function signUp() {
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const contact = document.getElementById('contact').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            // Store the user credentials in local storage
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+            localStorage.setItem('email', email); // Optional: Store email if needed
+            localStorage.setItem('contact', contact); // Optional: Store contact if needed
+
+            alert(`Sign up successful! You can now log in with your account.`);
+            
+            // Redirect to the login page
+            window.location.href = 'index.html'; // Change 'login.html' to the actual path of your login page
+        }
+    </script>
+</head>
+<body>
+    <div class="signup-container">
+        <img alt="Logo with a pencil and text 'SMARTPEN SYNC' with a tagline 'Write Your Story'" height="100" src="asset/SMARTPEN_SYNC-removebg-preview 1 (1).png" width="300"/>
+        <input id="email" placeholder="Email" type="email" required/>
+        <input id="username" placeholder="Username" type="text" required/>
+        <input id="password" placeholder="Password" type="password" required/>
+        <input id="confirm-password" placeholder="Confirm Password" type="password" required/>
+        <input id="contact" placeholder="Contact" type="text" required/>
+        <button onclick="signUp()">Sign up</button>
+    </div>
+</body>
+</html>

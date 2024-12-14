@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 2px solid #ff7f50;
+}
+.search-bar {
+    flex: 0 0 400px; /* Fixed width for the search bar */
+    display: flex;
+    align-items: center;
+    border: 2px solid #ff7f50;
+    border-radius: 25px;
+    padding: 5px 10px;
+}
+.search-bar input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 5px;
+    border-radius: 20px; /* Rounded corners for input */
+}
+.menu-icon {
+    color: #ff7f50;
+    font-size: 24px;
+    cursor: pointer;
+    position: relative; /* For positioning the dropdown */
+    margin-left: -1000px; /* Space between search bar and menu icon */
+}
+.dropdown {
+    display: none;
+    position: absolute;
+    font-size: 18px;
+    top: 40px; /* Adjusted for a smaller menu */
+    right: 0;
+    background-color: white;
+    border: 1px solid #ff7f50;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+.dropdown a {
+    display: flex; /* Changed to flex for better alignment */
+    align-items: center; /* Center the items vertically */
+    padding: 8px 10px; /* Reduced padding for a smaller menu */
+    color: #ff7f50;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+.dropdown a i {
+    margin-right: 5px; /* Space between icon and text */
+}
+.dropdown a:hover {
+    background-color: #ffe4c4;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-content: center;
+    margin: 20px;
+}
+.grid-item {
+    background-color: #ff7f50;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.add-folder-button {
+    background-color: #ff7f50;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 20px auto;
+    width: 50px;
+}
+.add-folder-button i {
+    font-size: 24px;
+}
+
+.delete-btn{
+    background-color: #ff7f50;
+    border: none;
+    padding: 20px 35px 20px 35px;
+    border-radius: 10px;
+    cursor: pointer;
+}
