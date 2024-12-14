@@ -1,5 +1,8 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mobile App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="note.css">
@@ -11,8 +14,8 @@
 <body>
     <div class="header">
         <div class="search-bar">
-            <input type="text" placeholder="Search">
-            <i class="fas fa-search"></i>
+            <input type="text" id="folderSearch" placeholder="Search folder" onkeypress="checkEnter(event)">
+            <i class="fas fa-search" onclick="searchFolder()"></i>
         </div>
         <div class="menu-icon" onclick="toggleMenu()">
             <i class="fas fa-bars"></i>
@@ -37,6 +40,7 @@
             <div class="note">
                 <textarea id="noteText" placeholder="Write your note here..."></textarea>
                 <button onclick="saveNote()">Save Note</button>
+                <button onclick="eraseSelectedText()">Erase Selected Text</button>
             </div>
         </div>
     </div>
@@ -44,68 +48,81 @@
     <script>
         function toggleMenu() {
             const menu = document.getElementById('menu');
-            if (menu.style.display === 'block') {
-                menu.style.display = 'none';
-            } else {
-                menu.style.display = 'block';
-            }
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         }
 
         function saveNote() {
-        const noteText = document.getElementById('noteText').value;
-        const folderName = window.location.search.split('=')[1];
-        let notes = JSON.parse(localStorage.getItem(folderName)) || [];
-        if (!notes.includes(noteText)) {
-            notes.push(noteText);
-            localStorage.setItem(folderName, JSON.stringify(notes));
-            alert('Note saved: ' + noteText);
-        } else {
-            alert('Note already exists');
-        }
-    }
-
-    function loadNote() {
-        const folderName = window.location.search.split('=')[1];
-        const notes = JSON.parse(localStorage.getItem(folderName)) || [];
-        document.getElementById('noteText').value = notes.join('\n');
-    }
-
-    window.onload = function() {
-        const folderName = window.location.search.split('=')[1];
-        loadNote(); // Ensure notes are loaded when the page is accessed
-    }
-
-    function eraseNote() {
-        const confirmErase = confirm("Are you sure you want to erase this note? This action cannot be undone.");
-        
-        if (confirmErase) {
+            const noteText = document.getElementById('noteText').value;
             const folderName = window.location.search.split('=')[1];
-            localStorage.removeItem(folderName);
-            document.getElementById('noteText').value = '';
-            alert('Note erased successfully.');
+            let notes = JSON.parse(localStorage.getItem(folderName)) || [];
+            if (!notes.includes(noteText)) {
+                notes.push(noteText);
+                localStorage.setItem(folderName, JSON.stringify(notes));
+                alert('Note saved: ' + noteText);
+            } else {
+                alert('Note already exists');
+            }
         }
-    }
 
-    document.getElementById('noteText').addEventListener('keydown', function(e) {
-        if (e.key === 'Backspace') {
-            e.preventDefault();
-            eraseNote();
+        function loadNote() {
+            const folderName = window.location.search.split('=')[1];
+            const notes = JSON.parse(localStorage.getItem(folderName)) || [];
+            document.getElementById('noteText').value = notes.join('\n');
         }
-    });
-        
-    function openSetting() {
-            // Redirect to the settings page
+
+        window.onload = function() {
+            const folderName = window.location.search.split('=')[1];
+            loadNote(); // Ensure notes are loaded when the page is accessed
+        }
+
+        function eraseSelectedText() {
+            const noteTextArea = document.getElementById('noteText');
+            const start = noteTextArea.selectionStart;
+            const end = noteTextArea.selectionEnd;
+
+            if (start === end) {
+                alert('Please select text to erase.');
+                return;
+            }
+
+            const currentText = noteTextArea.value;
+            const newText = currentText.slice(0, start) + currentText.slice(end);
+            noteTextArea.value = newText;
+
+            // Optionally, save the updated note
+            const folderName = window.location.search.split('=')[1];
+            let notes = JSON.parse(localStorage.getItem(folderName)) || [];
+            notes = notes.map(note => note === currentText ? newText : note);
+            localStorage.setItem(folderName, JSON.stringify(notes));
+        }
+
+        function openSetting() {
             window.location.href = "Setti.html"; // Change to your actual settings page URL
         }
 
         function openProfile() {
-            // Redirect to the profile page
             window.location.href = "profile.html"; // Change to your actual profile page URL
         }
 
-        function logout() {
-            // Redirect to the login page
+        
+            function logout() {
             window.location.href = "login.html"; // Change to your actual login page URL
+        }
+
+        function searchFolder() {
+            const folderName = document.getElementById('folderSearch').value.trim();
+            if (folderName) {
+                // Redirect to the folder page, assuming the folder name is passed as a query parameter
+                window.location.href = `dashboard.html?folder=${encodeURIComponent(folderName)}`;
+            } else {
+                alert('Please enter a folder name to search.');
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                searchFolder();
+            }
         }
     </script>
 </body>
