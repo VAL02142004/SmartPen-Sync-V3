@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPen Sync</title>
+    <title>SmartPen Sync - Register</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -72,13 +72,22 @@
                 return;
             }
 
-            // Save to local storage
-            localStorage.setItem('email', email);
-            localStorage.setItem('username', username);
-            localStorage.setItem('password', newPassword);
+            // Retrieve stored users from local storage
+            const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Check if the username already exists
+            const existingUser  = storedUsers.find(user => user.username === username);
+            if (existingUser ) {
+                alert('Username already exists. Please choose a different username.');
+                return;
+            }
+
+            // Save new user to local storage
+            storedUsers.push({ email, username, password: newPassword });
+            localStorage.setItem('users', JSON.stringify(storedUsers));
 
             // Redirect to the login page
-            window.location.href = 'login.html'; // Change 'login.html' to the actual path of your login page
+            window.location.href = 'index.html'; // Change 'index.html' to the actual path of your login page
         }
     </script>
 </head>
@@ -94,7 +103,7 @@
             <input id="username" name="username" type="text" required/>
         </div>
         <div class="input-group">
-            <label for="new-password">New Password:</label>
+            <label for="new-password">            <label for="new-password">New Password:</label>
             <input id="new-password" name="new-password" type="password" required/>
         </div>
         <div class="input-group">
