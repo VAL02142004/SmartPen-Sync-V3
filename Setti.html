@@ -105,6 +105,25 @@
         } .enable.active, .disable.active {
     border: 2px solid #E27D60; /* Optional: Add a border to indicate active state */
 }
+@media only screen and (max-width: 480px) {
+          .container {
+              max-width: 100%;
+              max-height: 100%;
+              border-radius: 10px;
+          }
+          .header img, .footer button {
+              width: 40px;
+              height: 40px;
+          }
+          .content .item .label {
+              font-size: 14px;
+              padding: 5px 8px;
+          }
+          .content .item button {
+              padding: 4px 8px;
+              font-size: 11px;
+          }
+      }
   </style>
   <script>
 function toggleButtons(item, enable) {
