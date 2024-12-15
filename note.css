@@ -97,6 +97,12 @@ body {
     }
     .sidebar {
         width: 100%;
+        @media (min-width: 601px) {
+            .sidebar {
+                width: 200px;
+                border-right: 2px solid #ff7f50;
+            }
+        }
         border-right: none;
         border-bottom: 2px solid #ff7f50;
     }
