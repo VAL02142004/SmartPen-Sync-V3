@@ -1,57 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile App</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="note.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-</head>
-<body>
-    <div class="header">
-        <div class="search-bar">
-            <input type="text" id="folderSearch" placeholder="Search folder" onkeypress="checkEnter(event)">
-            <i class="fas fa-search" onclick="searchFolder()"></i>
-        </div>
-        <div class="menu-icon" onclick="toggleMenu()">
-            <i class="fas fa-bars"></i>
-        </div>
-        <div class="menu" id="menu">
-            <a href="#" onclick="openSetting()">
-                <i class="fas fa-cog"></i>  
-                SETTING
-            </a>
-            <a href="#" onclick="openProfile()">
-                <i class="fas fa-user"></i>
-                PROFILE
-            </a>
-            <a href="#" onclick="logout()">Log out</a>
-        </div>
-    </div>
-    <div class="container">
-        <div class="sidebar">
-            <a href="dashboard.html"><i class="fas fa-home"></i></a>
-        </div>
-        <div class="content">
-            <div class="note">
-                <textarea id="noteText" placeholder="Write your note here..."></textarea>
-                <button onclick="saveNote()">Save Note</button>
-                <button onclick="eraseSelectedText()">Erase Selected Text</button>
+<html>
+    <head>
+        <title>Mobile App</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <link rel="stylesheet" href="note.css">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+    </head>
+    <body>
+        <div class="header">
+            <div class="search-bar">
+                <input type="text" placeholder="Search">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="menu-icon" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="menu" id="menu">
+                <a href="#" onclick="openSetting()">
+                    <i class="fas fa-cog"></i>  
+                    SETTING
+                </a>
+                <a href="#" onclick="openProfile()">
+                    <i class="fas fa-user"></i>
+                    PROFILE
+                </a>
+                <a href="#" onclick="logout()">Log out</a>
             </div>
         </div>
-    </div>
+        <div class="container">
+            <div class="sidebar">
+                <a href="dashboard.html"><i class="fas fa-home"></i></a>
+            </div>
+            <div class="content">
+                <div class="note">
+                    <textarea id="noteText" placeholder="Write your note here..."></textarea>
+                    <button onclick="saveNote()">Save Note</button>
+                </div>
+            </div>
+        </div>
 
-    <script>
-        function toggleMenu() {
-            const menu = document.getElementById('menu');
-            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-        }
+        <script>
+            function toggleMenu() {
+                const menu = document.getElementById('menu');
+                if (menu.style.display === 'block') {
+                    menu.style.display = 'none';
+                } else {
+                    menu.style.display = 'block';
+                }
+            }
 
-        function saveNote() {
+            function saveNote() {
             const noteText = document.getElementById('noteText').value;
             const folderName = window.location.search.split('=')[1];
             let notes = JSON.parse(localStorage.getItem(folderName)) || [];
@@ -75,55 +75,38 @@
             loadNote(); // Ensure notes are loaded when the page is accessed
         }
 
-        function eraseSelectedText() {
-            const noteTextArea = document.getElementById('noteText');
-            const start = noteTextArea.selectionStart;
-            const end = noteTextArea.selectionEnd;
-
-            if (start === end) {
-                alert('Please select text to erase.');
-                return;
+        function eraseNote() {
+            const confirmErase = confirm("Are you sure you want to erase this note? This action cannot be undone.");
+            
+            if (confirmErase) {
+                const folderName = window.location.search.split('=')[1];
+                localStorage.removeItem(folderName);
+                document.getElementById('noteText').value = '';
+                alert('Note erased successfully.');
             }
-
-            const currentText = noteTextArea.value;
-            const newText = currentText.slice(0, start) + currentText.slice(end);
-            noteTextArea.value = newText;
-
-            // Optionally, save the updated note
-            const folderName = window.location.search.split('=')[1];
-            let notes = JSON.parse(localStorage.getItem(folderName)) || [];
-            notes = notes.map(note => note === currentText ? newText : note);
-            localStorage.setItem(folderName, JSON.stringify(notes));
         }
 
+        document.getElementById('noteText').addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace') {
+                e.preventDefault();
+                eraseNote();
+            }
+        });
+            
         function openSetting() {
-            window.location.href = "Setti.html"; // Change to your actual settings page URL
-        }
+                // Redirect to the settings page
+                window.location.href = "Setti.html"; // Change to your actual settings page URL
+            }
 
-        function openProfile() {
-            window.location.href = "profile.html"; // Change to your actual profile page URL
-        }
+            function openProfile() {
+                // Redirect to the profile page
+                window.location.href = "profile.html"; // Change to your actual profile page URL
+            }
 
-        
             function logout() {
-            window.location.href = "login.html"; // Change to your actual login page URL
-        }
-
-        function searchFolder() {
-            const folderName = document.getElementById('folderSearch').value.trim();
-            if (folderName) {
-                // Redirect to the folder page, assuming the folder name is passed as a query parameter
-                window.location.href = `dashboard.html?folder=${encodeURIComponent(folderName)}`;
-            } else {
-                alert('Please enter a folder name to search.');
+                // Redirect to the login page
+                window.location.href = "login.html"; // Change to your actual login page URL
             }
-        }
-
-        function checkEnter(event) {
-            if (event.key === 'Enter') {
-                searchFolder();
-            }
-        }
-    </script>
-</body>
-</html>
+        </script>
+    </body>
+    </html>
