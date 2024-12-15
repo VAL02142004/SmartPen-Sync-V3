@@ -60,3 +60,15 @@ button:last-child {
     width: 100%;
     margin-top: 10px;
 }
+
+@media (max-width: 600px) {
+    .form-container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    button {
+        width: 100%;
+        margin: 10px 0;
+    }
+}
