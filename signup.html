@@ -19,6 +19,14 @@
             background-color: #f0f0f0; /* Light background color */
             font-family: Arial, sans-serif; /* Set a default font */
         }
+        @media screen and (max-width: 600px) {
+            .signup-container {
+                width: 90%;
+            }
+            input, button {
+                width: 100%;
+            }
+        }
         .signup-container {
             border: 2px solid #f28b82;
             border-radius: 10px;
@@ -126,7 +134,6 @@
         <input id="username" placeholder="Username" type="text" required/>
         <input id="password" placeholder="Password" type="password" required/>
         <input id="confirm-password" placeholder="Confirm Password" type="password" required/>
-        <input id="contact" placeholder="Contact" type="text" required/>
         <button onclick="signUp()">Sign up</button>
         <button onclick="returnToLogin()" style="margin-top: 10px;">Return to Login</button>
     </div>
