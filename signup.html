@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartPen Sync - Sign Up</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <style>
         body {
@@ -18,14 +14,6 @@
             margin: 0;
             background-color: #f0f0f0; /* Light background color */
             font-family: Arial, sans-serif; /* Set a default font */
-        }
-        @media screen and (max-width: 600px) {
-            .signup-container {
-                width: 90%;
-            }
-            input, button {
-                width: 100%;
-            }
         }
         .signup-container {
             border: 2px solid #f28b82;
@@ -44,6 +32,23 @@
             border-radius: 5px;
             font-size: 14px;
         }
+
+        @media screen {
+                button {
+                    width: 50%;
+                    padding: 10px;
+                    background-color: #f28b82;
+                    border: none;
+                    border-radius: 5px;
+                    color: #fff;
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+                }
+                button:hover {
+                    background-color: #d16f6f;
+                }
+        }
         button {
             width: 50%;
             padding: 10px;
@@ -60,26 +65,6 @@
         }
     </style>
     <script>
-        function isPasswordStrong(password) {
-            // Check for minimum length and at least one number and one uppercase letter
-            const minLength = 8;
-            const hasNumber = /\d/;
-            const hasUppercase = /[A-Z]/;
-
-            return password.length >= minLength && hasNumber.test(password) && hasUppercase.test(password);
-        }
-
-        function suggestUsername(username) {
-            // Suggest a new username by appending a number
-            let suggestion = username;
-            let count = 1;
-            while (localStorage.getItem(suggestion)) {
-                suggestion = username + count;
-                count++;
-            }
-            return suggestion;
-        }
-
         function signUp() {
             const email = document.getElementById('email').value;
             const username = document.getElementById('username').value;
@@ -87,43 +72,21 @@
             const confirmPassword = document.getElementById('confirm-password').value;
             const contact = document.getElementById('contact').value;
 
-            // Check if passwords match
             if (password !== confirmPassword) {
                 alert('Passwords do not match!');
                 return;
             }
 
-            // Check if the password is strong enough
-            if (!isPasswordStrong(password)) {
-                alert('Password must be at least 8 characters long and include at least one number and one uppercase letter.');
-                return;
-            }
-
-            // Retrieve stored users from local storage
-            const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-
-            // Check if the username already exists
-            const existingUser  = storedUsers.find(user => user.username === username);
-
-            if (existingUser ) {
-                const suggestedUsername = suggestUsername(username);
-                alert(`Username is already taken. Suggested username: ${suggestedUsername}`);
-                return;
-            }
-
-            // Add new user to the array
-            storedUsers.push({ email, username, password, contact });
-            localStorage.setItem('users', JSON.stringify(storedUsers));
+            // Store the user credentials in local storage
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+            localStorage.setItem('email', email); // Optional: Store email if needed
+            localStorage.setItem('contact', contact); // Optional: Store contact if needed
 
             alert(`Sign up successful! You can now log in with your account.`);
             
             // Redirect to the login page
-            window.location.href = 'index.html'; // Change 'index.html' to the actual path of your login page
-        }
-
-        function returnToLogin() {
-            // Redirect to the login page
-            window.location.href = 'index.html'; // Change 'index.html' to the actual path of your login page
+            window.location.href = 'login.html'; // Change 'login.html' to the actual path of your login page
         }
     </script>
 </head>
@@ -134,8 +97,8 @@
         <input id="username" placeholder="Username" type="text" required/>
         <input id="password" placeholder="Password" type="password" required/>
         <input id="confirm-password" placeholder="Confirm Password" type="password" required/>
+        <input id="contact" placeholder="Contact" type="text" required/>
         <button onclick="signUp()">Sign up</button>
-        <button onclick="returnToLogin()" style="margin-top: 10px;">Return to Login</button>
     </div>
 </body>
 </html>
