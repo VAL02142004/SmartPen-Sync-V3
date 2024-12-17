@@ -32,23 +32,6 @@
             border-radius: 5px;
             font-size: 14px;
         }
-
-        @media screen {
-                button {
-                    width: 50%;
-                    padding: 10px;
-                    background-color: #f28b82;
-                    border: none;
-                    border-radius: 5px;
-                    color: #fff;
-                    font-size: 14px;
-                    cursor: pointer;
-                    transition: background-color 0.3s;
-                }
-                button:hover {
-                    background-color: #d16f6f;
-                }
-        }
         button {
             width: 50%;
             padding: 10px;
@@ -63,6 +46,12 @@
         button:hover {
             background-color: #d16f6f; /* Darker shade on hover */
         }
+        .back-button {
+            width: 100%;
+            margin-top: 10px;
+            background-color: #ccc; /* Grey background for the back button */
+            color: #000; /* Black text color */
+        }
     </style>
 </head>
 <body>
@@ -73,61 +62,73 @@
         <input id="password" placeholder="Password" type="password" required/>
         <input id="confirm-password" placeholder="Confirm Password" type="password" required/>
         <input id="contact" placeholder="Contact" type="text" required/>
-        <button type="submit" onclick="signUp()">Sign up</button>
+        <button type="submit">Sign up</button>
+        <button type="button" class="back-button" onclick="goToLogin()">Back to Login</button>
     </form>
 
     <script>
-  document.getElementById("register-form")
-.addEventListener("submit", function (event) {
-  event.preventDefault();
+        document.getElementById("register-form").addEventListener("submit", function (event) {
+            event.preventDefault();
 
-  var username = document.getElementById("username").value;
-  var email = document.getElementById("email").value;
-  var password = document.getElementById("password").value;
-  var confirmPassword = document.getElementById("confirm-password").value;
-  var contact = document.getElementById("contact").value;
+            var username = document.getElementById("username").value;
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirm-password").value;
+            var contact = document.getElementById("contact").value;
 
-  function checkPasswordsMatch() {
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return false;
-    }
-    return true;
-  }
+            function checkPasswordsMatch() {
+                if (password !== confirmPassword) {
+                    alert("Passwords do not match!");
+                    return false;
+                }
+                return true;
+            }
 
-  function checkPasswordStrength(password) {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(password);
-  }
+            function checkPasswordStrength(password) {
+                const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                return regex.test(password);
+            }
 
-  if (!checkPasswordsMatch()) {
-    return false;
-  }
+            if (!checkPasswordsMatch()) {
+                return false;
+            }
 
-  if (!checkPasswordStrength(password)) {
-    alert("Please create a strong password with at least 8 characters including uppercase, lowercase, numbers, and special characters.");
-    return false;
-  }
+            if (!checkPasswordStrength(password)) {
+                alert("Please create a strong password with at least 8 characters including uppercase, lowercase, numbers, and special characters.");
+                return false;
+            }
 
-  // Create an array if it doesn't exist, otherwise append to existing array
-  let users = JSON.parse(localStorage.getItem("RegisteredUsers")) || [];
+            // Create an array if it doesn't exist, otherwise append to existing array
+            let users = JSON.parse(localStorage.getItem("RegisteredUsers")) || [];
 
-  const newUser = {
-    username: username,
-    email: email,
-    password: password,
-    contact: contact,
-  };
+            // Check if the username already exists
+            const existingUser  = users.find(user => user.username === username);
+            if (existingUser ) {
+                alert("Username already exists. Please choose a different username.");
+                return;
+            }
 
-  // Add new user to the array
-  users.push(newUser);
+            const newUser  = {
+                username: username,
+                email: email,
+                password: password,
+                contact: contact,
+            };
 
-  // Store the updated array in localStorage
-  localStorage.setItem("RegisteredUsers", JSON.stringify(users));
+            // Add new user to the array
+            users.push(newUser );
 
-  alert("Registration successful! Please login.");
-  window.location.href = "index.html";
-});
-       </script>
+            // Store the updated array in localStorage
+            localStorage.setItem("RegisteredUsers", JSON.stringify(users));
+
+            alert("Registration successful! Please login.");
+            window.location.href = "index.html"; // Redirect to the login page
+        });
+
+        function goToLogin() {
+            // Redirect to the login page
+            window.location.href = "index.html"; // Change 'index.html' to the actual path of your login page
+        }
+    </script>
 </body>
 </html>
