@@ -38,26 +38,26 @@
             // Retrieve stored users from local storage
             const storedUsers = JSON.parse(localStorage.getItem('RegisteredUsers')) || [];
 
-            // Check if the username and password match any stored user
-            const user = storedUsers.find(user => user.username === username && user.password === password);
+                // Check if the username and password match any stored user
+                const user = storedUsers.find(user => user.username === username && user.password === password);
 
-            if (user) {
-                // Redirect to the dashboard page
-                window.location.href = 'dashboard.html'; // Change 'dashboard.html' to the actual path of your dashboard page
-            } else {
-                alert('Invalid username or password. Please try again.');
-            }
-        }
+if (user) {
+    // Redirect to the dashboard page
+    window.location.href = 'dashboard.html'; // Change 'dashboard.html' to the actual path of your dashboard page
+} else {
+    alert('Invalid username or password. Please try again.');
+}
+}
 
-        function signUp() {
-            // Redirect to the sign-up page
-            window.location.href = 'signup.html'; // Change 'signup.html' to the actual path of your sign-up page
-        }
+function signUp() {
+// Redirect to the sign-up page
+window.location.href = 'signup.html'; // Change 'signup.html' to the actual path of your sign-up page
+}
 
-        function forgot() {
-            // Redirect to the forgot password page
-            window.location.href = 'forgot.html'; // Change 'forgot.html' to the actual path of your forgot password page
-        }
-    </script>/
+function forgot() {
+// Redirect to the forgot password page
+window.location.href = 'forgot.html'; // Change 'forgot.html' to the actual path of your forgot password page
+}
+</script>
 </body>
 </html>
