@@ -10,13 +10,33 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="style.css">
+</head>
+<body style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; background-color: #fff;">
+    <div class="container" style="text-align: center;">
+        <div class="logo" style="margin-bottom: 20px;">
+            <img alt="SmartPen Sync logo" height="100" src="asset/SMARTPEN_SYNC-removebg-preview 1 (1).png" width="300"/>
+        </div>  
+        <div class="form-container" style="border: 2px solid #f28b82; border-radius: 10px; padding: 20px; width: 300px;">
+            <label for="username" style="display: block; margin-bottom: 10px; font-size: 18px; color: #f28b82;">Username:</label>
+            <input id="username" name="username" type="text" style="width: calc(100% - 20px); padding: 10px; margin-bottom: 20px; border: 2px solid #f28b82; border-radius: 5px; font-size: 16px;"/>
+            <label for="password" style="display: block; margin-bottom: 10px; font-size: 18px; color: #f28b82;">Password:</label>
+            <input id="password" name="password" type="password" style="width: calc(100% - 20px); padding: 10px; margin-bottom: 20px; border: 2px solid #f28b82; border-radius: 5px; font-size: 16px;"/>
+            <div>
+                <button onclick="login()" type="button" style="width: 45%; padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Login</button>
+                <button onclick="signUp()" type="button" style="width: 45%; padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Sign Up</button>
+            </div>
+            <div style="margin-top: 10px;">
+                <button onclick="forgot()" type="button" style="width: 100%; padding: 10px; margin-top: 10px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Forgot Username/Password?</button>
+            </div>
+        </div>
+    </div>
     <script>
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
             // Retrieve stored users from local storage
-            const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+            const storedUsers = JSON.parse(localStorage.getItem('RegisteredUsers')) || [];
 
             // Check if the username and password match any stored user
             const user = storedUsers.find(user => user.username === username && user.password === password);
@@ -38,26 +58,6 @@
             // Redirect to the forgot password page
             window.location.href = 'forgot.html'; // Change 'forgot.html' to the actual path of your forgot password page
         }
-    </script>
-</head>
-<body style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; background-color: #fff;">
-    <div class="container" style="text-align: center;">
-        <div class="logo" style="margin-bottom: 20px;">
-            <img alt="SmartPen Sync logo" height="100" src="asset/SMARTPEN_SYNC-removebg-preview 1 (1).png" width="300"/>
-        </div>  
-        <div class="form-container" style="border: 2px solid #f28b82; border-radius: 10px; padding: 20px; width: 300px;">
-            <label for="username" style="display: block; margin-bottom: 10px; font-size: 18px; color: #f28b82;">Username:</label>
-            <input id="username" name="username" type="text" style="width: calc(100% - 20px); padding: 10px; margin-bottom: 20px; border: 2px solid #f28b82; border-radius: 5px; font-size: 16px;"/>
-            <label for="password" style="display: block; margin-bottom: 10px; font-size: 18px; color: #f28b82;">Password:</label>
-            <input id="password" name="password" type="password" style="width: calc(100% - 20px); padding: 10px; margin-bottom: 20px; border: 2px solid #f28b82; border-radius: 5px; font-size: 16px;"/>
-            <div>
-                <button onclick="login()" type="button" style="width: 45%; padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Login</button>
-                <button onclick="signUp()" type="button" style="width: 45%; padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Sign Up</button>
-            </div>
-            <div style="margin-top: 10px;">
-                <button onclick="forgot()" type="button" style="width: 100%; padding: 10px; margin-top: 10px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Forgot Username/Password?</button>
-            </div>
-        </div>
-    </div>
+    </script>/
 </body>
 </html>
