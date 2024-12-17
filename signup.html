@@ -87,6 +87,28 @@
   var confirmPassword = document.getElementById("confirm-password").value;
   var contact = document.getElementById("contact").value;
 
+  function checkPasswordsMatch() {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return false;
+    }
+    return true;
+  }
+
+  function checkPasswordStrength(password) {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  }
+
+  if (!checkPasswordsMatch()) {
+    return false;
+  }
+
+  if (!checkPasswordStrength(password)) {
+    alert("Please create a strong password with at least 8 characters including uppercase, lowercase, numbers, and special characters.");
+    return false;
+  }
+
   // Create an array if it doesn't exist, otherwise append to existing array
   let users = JSON.parse(localStorage.getItem("RegisteredUsers")) || [];
 
