@@ -129,27 +129,26 @@
                 checkbox.type = "checkbox";
                 checkbox.value = folderName;
                 checkbox.className = "folder-checkbox";
+                checkbox.style.display = 'none'; // Initially hide the checkbox
 
                 // Append the checkbox and folder name to the new folder element
                 newFolder.appendChild(checkbox);
                 newFolder.appendChild(document.createTextNode(folderName));
+
+                // Variables for handling click and long press
+                let pressTimer;
+                let isLongPress = false;
 
                 // Add event listener for double-click to open the folder
                 newFolder.ondblclick = function() {
                     openFolder(folderName);
                 };
 
-                // Add event listener for single-click to toggle the checkbox
-                checkbox.onclick = function(event) {
-                    // Prevent the double-click event from firing when clicking the checkbox
-                    event.stopPropagation();
-                };
-
                 // Long press detection
-                let pressTimer;
                 newFolder.addEventListener('mousedown', function() {
                     pressTimer = window.setTimeout(function() {
                         checkbox.style.display = 'block'; // Show checkbox on long press
+                        isLongPress = true; // Set long press flag
                     }, 500); // 500ms for long press
                 });
 
@@ -236,7 +235,7 @@
         function closeShareDialog() {
             document.getElementById("shareDialog").style.display = "none";
             document.getElementById("overlay").style.display = "none";
-            document.getElementById("errorMessage").style.display = "none"; // Hide error message
+            document.getElementById("errorMessage").style.display = "none";
         }
 
         function copyToClipboard() {
