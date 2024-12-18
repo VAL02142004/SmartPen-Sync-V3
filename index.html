@@ -40,8 +40,8 @@
 
                 // Check if the username and password match any stored user
                 const user = storedUsers.find(user => user.username === username && user.password === password);
-
-if (user) {
+                const newpassword = storedUsers.find(user =>  user.newPassword === password);
+if (user ||newpassword ) {
     // Redirect to the dashboard page
     window.location.href = 'dashboard.html'; // Change 'dashboard.html' to the actual path of your dashboard page
 } else {
