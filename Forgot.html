@@ -61,28 +61,7 @@
             }
         }     
     </style>
-    <script>
-        function confirmAction() {
-            const email = document.getElementById('email').value;
-            const username = document.getElementById('username').value;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-
-            // Check if passwords match
-            if (newPassword !== confirmPassword) {
-                alert("Passwords do not match. Please try again.");
-                return;
-            }
-
-            // Save to local storage
-            localStorage.setItem('email', email);
-            localStorage.setItem('username', username);
-            localStorage.setItem('password', newPassword);
-
-            // Redirect to the login page
-            window.location.href = 'index.html'; // Change 'login.html' to the actual path of your login page
-        }
-    </script>
+    
 </head>
 <body>
     <div class="container">
@@ -104,6 +83,69 @@
             <input id="confirm-password" name="confirm-password" type="password" required/>
         </div>
         <button class="btn" onclick="confirmAction()">Confirm</button>
+       <div style="margin-top: 10px;">
+        <button style="cursor: pointer; border: none; border-radius: 5px; padding: 5px 20px 5px 20px; background-color: #ff7f50; color: white;" type="button" class="back-button" onclick="goToLogin()">Back to Login</button>
+       </div>
     </div>
+    <script>
+        function goToLogin() {
+            // Redirect to the login page
+            window.location.href = "index.html"; // Change 'index.html' to the actual path of your login page
+        }
+        function confirmAction() {
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Basic validation
+            if (!email || !username || !newPassword || !confirmPassword) {
+                alert("All fields are required.");
+                return;
+            }
+
+            // Check for strong password: at least 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
+            const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+if (!strongPasswordPattern.test(newPassword)) {
+    alert("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.");
+    return;
+}
+
+// Check if passwords match
+if (newPassword !== confirmPassword) {
+    alert("Passwords do not match. Please try again.");
+    return;
+}
+
+// Check if username already exists in local storage
+let storedUsers = JSON.parse(localStorage.getItem("RegisteredUsers")) || [];
+const existingUser  = storedUsers.find(user => user.username === username);
+
+if (existingUser ) {
+    // Remove existing user with the same username
+    storedUsers = storedUsers.filter(user => user.username !== username);
+    localStorage.setItem("RegisteredUsers", JSON.stringify(storedUsers));
+    alert("Username already exists. The existing user has been removed. Please choose a different username.");
+    return;
+}
+
+// Save new user to local storage
+const newUser  = {
+    username: username,
+    email: email,
+    password: newPassword // Store the password securely in a real application
+};
+
+// Add new user to the array
+storedUsers.push(newUser );
+
+// Store the updated array in localStorage
+localStorage.setItem("RegisteredUsers", JSON.stringify(storedUsers));
+
+// Redirect to the login page
+window.location.href = 'index.html'; // Change 'index.html' to the actual path of your login page
+}
+</script>
 </body>
 </html>
