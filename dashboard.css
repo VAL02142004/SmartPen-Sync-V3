@@ -131,3 +131,15 @@ body {
         .user-list {
             margin-top: 10px;
         }
+.folder-checkbox {
+            display: none; /* Hide checkboxes by default */
+        }
+        .grid-item {
+            cursor: pointer; /* Change cursor to pointer for better UX */
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 5px;
+            display: inline-block;
+            align-items: center;
+        }
+
