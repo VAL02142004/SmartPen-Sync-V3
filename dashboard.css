@@ -14,7 +14,7 @@ body {
     border-bottom: 2px solid #ff7f50;
 }
 .search-bar {
-    flex: 0 0 400px; /* Fixed width for the search bar */
+    flex: 0 0 90%; /* Fixed width for the search bar */
     display: flex;
     align-items: center;
     border: 2px solid #ff7f50;
