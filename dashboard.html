@@ -10,6 +10,45 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="dashboard.css">
+    <style>
+        .grid-item {
+            display: flex;
+            align-items: center;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            position: relative;
+        }
+        .folder-checkbox {
+            margin-right: 10px;
+        }
+        .grid-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .share-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 1001;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -65,166 +104,146 @@
     
     <script>
         // List of valid users
-        const validUsers = ["user1", "user2", "user3"]; // Add more valid users as needed
+        const validUsers = ["user1", "user2", "user3"]; // Add more valid users        // Add more valid users as needed
 
-        // Load existing folders from localStorage when the page loads
-        window.onload = function() {
-            loadFolders();
+// Load existing folders from localStorage when the page loads
+window.onload = function() {
+    loadFolders();
+};
+
+function openSetting() {
+    window.location.href = "Setti.html"; // Change to your actual settings page URL
+}
+
+function openProfile() {
+    window.location.href = "profile.html"; // Change to your actual profile page URL
+}
+
+function logout() {
+    window.location.href = "index.html"; // Change to your actual login page URL
+}
+
+function toggleDropdown() {
+    var dropdown = document.getElementById("dropdownMenu");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+}
+
+function openFolder(folderName) {
+    window.location.href = "note.html?folder=" + encodeURIComponent(folderName); // Change to your actual notes page URL
+}
+
+function addFolder() {
+    var folderName = prompt("Enter folder name:");
+    if (folderName) {
+        saveFolder(folderName);
+        addFolderToGrid(folderName);
+    } else {
+        alert("Please enter a folder name");
+    }
+}
+
+function saveFolder(folderName) {
+    let folders = JSON.parse(localStorage.getItem('folders')) || [];
+    if (!folders.includes(folderName)) {
+        folders.push(folderName);
+        localStorage.setItem('folders', JSON.stringify(folders));
+    }
+}
+
+function loadFolders() {
+    let folders = JSON.parse(localStorage.getItem('folders')) || [];
+    folders.forEach(folder => {
+        addFolderToGrid(folder);
+    });
+}
+
+function addFolderToGrid(folderName) {
+    try {
+        var gridContainer = document.getElementById("gridContainer");
+        var newFolder = document.createElement("div");
+        newFolder.className = "grid-item";
+
+        // Create a checkbox for selecting the folder
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = folderName;
+        checkbox.className = "folder-checkbox";
+        checkbox.style.display = 'inline'; // Always show the checkbox
+
+        // Append the checkbox and folder name to the new folder element
+        newFolder.appendChild(checkbox);
+        newFolder.appendChild(document.createTextNode(folderName));
+
+        // Add event listener for double-click to open the folder
+        newFolder.ondblclick = function() {
+            openFolder(folderName);
         };
 
-        function openSetting() {
-            window.location.href = "Setti.html"; // Change to your actual settings page URL
+        // Append the new folder element to the grid container
+        gridContainer.appendChild(newFolder);
+    } catch (error) {
+        console.error("Error adding folder to grid:", error);
+    }
+}
+
+function filterFolders() {
+    var input = document.getElementById("searchInput").value.toLowerCase();
+    var gridItems = document.getElementsByClassName("grid-item");
+
+    // Loop through all grid items and hide those that don't match the search query
+    for (var i = 0; i < gridItems.length; i++) {
+        var folderName = gridItems[i].innerText.toLowerCase();
+        if (folderName.includes(input)) {
+            gridItems[i].style.display = ""; // Show the item
+        } else {
+            gridItems[i].style.display = "none"; // Hide the item
         }
+    }
+}
 
-        function openProfile() {
-            window.location.href = "profile.html"; // Change to your actual profile page URL
+function deleteFolder(folderName) {
+    // Remove the folder from localStorage
+    let folders = JSON.parse(localStorage.getItem('folders'));
+    if (folders && folders.includes(folderName)) {
+        folders.splice(folders.indexOf(folderName), 1);
+        localStorage.setItem('folders', JSON.stringify(folders));
+    }
+
+    // Remove the folder from the grid
+    var gridItems = document.getElementsByClassName("grid-item");
+    for (var i = 0; i < gridItems.length; i++) {
+        if (gridItems[i].innerText === folderName) {
+            gridItems[i].remove();
+            break;
         }
+    }
+}
 
-        function logout() {
-            window.location.href = "index.html"; // Change to your actual login page URL
+function showDeleteConfirmation() {
+    var folderName = prompt("Enter the folder name you want to delete:");
+    if (folderName) {
+        deleteFolder(folderName);
+    }
+}
+
+function openShareDialog() {
+    let selectedFolders = [];
+    const checkboxes = document.getElementsByClassName("folder-checkbox");
+
+    // Collect selected folder names
+    for (let checkbox of checkboxes) {
+        if (checkbox.checked) {
+            selectedFolders.push(checkbox.value);
         }
+    }
 
-        function toggleDropdown() {
-            var dropdown = document.getElementById("dropdownMenu");
-            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-        }
+    if (selectedFolders.length === 0) {
+        alert("No folders selected to share.");
+        return;
+    }
 
-        function openFolder(folderName) {
-            window.location.href = "note.html?folder=" + encodeURIComponent(folderName); // Change to your actual notes page URL
-        }
-
-        function addFolder() {
-            var folderName = prompt("Enter folder name:");
-            if (folderName) {
-                saveFolder(folderName);
-                addFolderToGrid(folderName);
-            } else {
-                alert("Please enter a folder name");
-            }
-        }
-
-        function saveFolder(folderName) {
-            let folders = JSON.parse(localStorage.getItem('folders')) || [];
-            if (!folders.includes(folderName)) {
-                folders.push(folderName);
-                localStorage.setItem('folders', JSON.stringify(folders));
-            }
-        }
-
-        function loadFolders() {
-            let folders = JSON.parse(localStorage.getItem('folders')) || [];
-            folders.forEach(folder => {
-                addFolderToGrid(folder);
-            });
-        }
-
-        function addFolderToGrid(folderName) {
-            try {
-                var gridContainer = document.getElementById("gridContainer");
-                var newFolder = document.createElement("div");
-                newFolder.className = "grid-item";
-
-                // Create a checkbox for selecting the folder
-                var checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.value = folderName;
-                checkbox.className = "folder-checkbox";
-                checkbox.style.display = 'none'; // Initially hide the checkbox
-
-                // Append the checkbox and folder name to the new folder element
-                newFolder.appendChild(checkbox);
-                newFolder.appendChild(document.createTextNode(folderName));
-
-                // Variables for handling click and long press
-                let pressTimer;
-                let isLongPress = false;
-
-                // Add event listener for double-click to open the folder
-                newFolder.ondblclick = function() {
-                    openFolder(folderName);
-                };
-
-                // Long press detection
-                newFolder.addEventListener('mousedown', function() {
-                    pressTimer = window.setTimeout(function() {
-                        checkbox.style.display = 'block'; // Show checkbox on long press
-                        isLongPress = true; // Set long press flag
-                    }, 500); // 500ms for long press
-                });
-
-                newFolder.addEventListener('mouseup', function() {
-                    clearTimeout(pressTimer);
-                });
-
-                newFolder.addEventListener('mouseleave', function() {
-                    clearTimeout(pressTimer);
-                });
-
-                // Append the new folder element to the grid container
-                gridContainer.appendChild(newFolder);
-            } catch (error) {
-                console.error("Error adding folder to grid:", error);
-            }
-        }
-
-        function filterFolders() {
-            var input = document.getElementById("searchInput").value.toLowerCase();
-            var gridItems = document.getElementsByClassName("grid-item");
-
-            // Loop through all grid items and hide those that don't match the search query
-            for (var i = 0; i < gridItems.length; i++) {
-                var folderName = gridItems[i].innerText.toLowerCase();
-                if (folderName.includes(input)) {
-                    gridItems[i].style.display = ""; // Show the item
-                } else {
-                    gridItems[i].style.display = "none"; // Hide the item
-                }
-            }
-        }
-
-        function deleteFolder(folderName) {
-            // Remove the folder from localStorage
-            let folders = JSON.parse(localStorage.getItem('folders'));
-            if (folders && folders.includes(folderName)) {
-                folders.splice(folders.indexOf(folderName), 1);
-                localStorage.setItem('folders', JSON.stringify(folders));
-            }
-
-            // Remove the folder from the grid
-            var gridItems = document.getElementsByClassName("grid-item");
-            for (var i = 0; i < gridItems.length; i++) {
-                if (gridItems[i].innerText === folderName) {
-                    gridItems[i].remove();
-                    break;
-                }
-            }
-        }
-
-        function showDeleteConfirmation() {
-            var folderName = prompt("Enter the folder name you want to delete:");
-            if (folderName) {
-                deleteFolder(folderName);
-            }
-        }
-
-        function openShareDialog() {
-            let selectedFolders = [];
-            const checkboxes = document.getElementsByClassName("folder-checkbox");
-
-            // Collect selected folder names
-            for (let checkbox of checkboxes) {
-                if (checkbox.checked) {
-                    selectedFolders.push(checkbox.value);
-                }
-            }
-
-            if (selectedFolders.length === 0) {
-                alert("No folders selected to share.");
-                return;
-            }
-
-            const folderUrls = selectedFolders.map(folder => `note.html?folder=${encodeURIComponent(folder)}`).join('\n');
-            const shareMessage = `Check out these folders:\n${folderUrls}`;
+    const folderUrls = selectedFolders.map(folder => `note.html?folder=${encodeURIComponent(folder)}`).join('\n');
+    const shareMessage = `Check out these folders:\n${folderUrls}`;
             document.getElementById("shareMessage").value = shareMessage;
 
             // Show the share dialog
