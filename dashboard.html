@@ -10,50 +10,11 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="dashboard.css" href="media.css ">
-    <style>
-        .grid-item {
-            display: flex;
-            align-items: center;
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            position: relative;
-        }
-        .folder-checkbox {
-            margin-right: 10px;
-        }
-        .grid-container {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-        .share-dialog {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            z-index: 1001;
-        }
-    </style>
 </head>
 <body>
     <div class="header">
         <div class="search-bar">
-            <input id="searchInput" placeholder="Search" type="text" oninput="filterFolders()"/>
+            <input id="searchInput" placeholder="Search" type="text" oninput="filterNotes()"/>
             <button>
                 <i class="fas fa-search"></i>
             </button>
@@ -73,22 +34,13 @@
     </div>
     
     <div class="grid-container" id="gridContainer"></div>
-    <div class="add-folder-button" onclick="addFolder()">
+    <div class="add-note-button" onclick="addNote()">
         <i class="fas fa-plus"></i>
-    </div>
-    
-    <div class="action-buttons">
-        <button class="delete-btn" onclick="showDeleteConfirmation()">
-            <i class="fas fa-trash-alt"></i>
-        </button>
-        <button class="share-btn" onclick="openShareDialog()">
-            <i class="fas fa-share-alt"></i>
-        </button>
     </div>
 
     <div class="overlay" id="overlay" onclick="closeShareDialog()"></div>
     <div class="share-dialog" id="shareDialog">
-        <h3>Share Folders</h3>
+        <h3>Share Notes</h3>
         <textarea id="shareMessage" rows="5" readonly></textarea>
         <br>
         <div class="user-list">
@@ -101,205 +53,15 @@
         <button onclick="shareViaEmail()">Share via Email</button>
         <button onclick="closeShareDialog()">Close</button>
     </div>
-    
-    <script>
-        // List of valid users
-        const validUsers = ["user1", "user2", "user3"]; // Add more valid users        // Add more valid users as needed
-
-// Load existing folders from localStorage when the page loads
-window.onload = function() {
-    loadFolders();
-};
-
-function openSetting() {
-    window.location.href = "Setti.html"; // Change to your actual settings page URL
-}
-
-function openProfile() {
-    window.location.href = "profile.html"; // Change to your actual profile page URL
-}
-
-function logout() {
-    window.location.href = "index.html"; // Change to your actual login page URL
-}
-
-function toggleDropdown() {
-    var dropdown = document.getElementById("dropdownMenu");
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-}
-
-function openFolder(folderName) {
-    window.location.href = "note.html?folder=" + encodeURIComponent(folderName); // Change to your actual notes page URL
-}
-
-function addFolder() {
-    var folderName = prompt("Enter folder name:");
-    if (folderName) {
-        saveFolder(folderName);
-        addFolderToGrid(folderName);
-    } else {
-        alert("Please enter a folder name");
-    }
-}
-
-function saveFolder(folderName) {
-    let folders = JSON.parse(localStorage.getItem('folders')) || [];
-    if (!folders.includes(folderName)) {
-        folders.push(folderName);
-        localStorage.setItem('folders', JSON.stringify(folders));
-    }
-}
-
-function loadFolders() {
-    let folders = JSON.parse(localStorage.getItem('folders')) || [];
-    folders.forEach(folder => {
-        addFolderToGrid(folder);
-    });
-}
-
-function addFolderToGrid(folderName) {
-    try {
-        var gridContainer = document.getElementById("gridContainer");
-        var newFolder = document.createElement("div");
-        newFolder.className = "grid-item";
-
-        // Create a checkbox for selecting the folder
-        var checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = folderName;
-        checkbox.className = "folder-checkbox";
-        checkbox.style.display = 'inline'; // Always show the checkbox
-
-        // Append the checkbox and folder name to the new folder element
-        newFolder.appendChild(checkbox);
-        newFolder.appendChild(document.createTextNode(folderName));
-
-        // Add event listener for double-click to open the folder
-        newFolder.ondblclick = function() {
-            openFolder(folderName);
-        };
-
-        // Append the new folder element to the grid container
-        gridContainer.appendChild(newFolder);
-    } catch (error) {
-        console.error("Error adding folder to grid:", error);
-    }
-}
-
-function filterFolders() {
-    var input = document.getElementById("searchInput").value.toLowerCase();
-    var gridItems = document.getElementsByClassName("grid-item");
-
-    // Loop through all grid items and hide those that don't match the search query
-    for (var i = 0; i < gridItems.length; i++) {
-        var folderName = gridItems[i].innerText.toLowerCase();
-        if (folderName.includes(input)) {
-            gridItems[i].style.display = ""; // Show the item
-        } else {
-            gridItems[i].style.display = "none"; // Hide the item
-        }
-    }
-}
-
-function deleteFolder(folderName) {
-    // Remove the folder from localStorage
-    let folders = JSON.parse(localStorage.getItem('folders'));
-    if (folders && folders.includes(folderName)) {
-        folders.splice(folders.indexOf(folderName), 1);
-        localStorage.setItem('folders', JSON.stringify(folders));
-    }
-
-    // Remove the folder from the grid
-    var gridItems = document.getElementsByClassName("grid-item");
-    for (var i = 0; i < gridItems.length; i++) {
-        if (gridItems[i].innerText === folderName) {
-            gridItems[i].remove();
-            break;
-        }
-    }
-}
-
-function showDeleteConfirmation() {
-    var folderName = prompt("Enter the folder name you want to delete:");
-    if (folderName) {
-        deleteFolder(folderName);
-    }
-}
-
-function openShareDialog() {
-    let selectedFolders = [];
-    const checkboxes = document.getElementsByClassName("folder-checkbox");
-
-    // Collect selected folder names
-    for (let checkbox of checkboxes) {
-        if (checkbox.checked) {
-            selectedFolders.push(checkbox.value);
-        }
-    }
-
-    if (selectedFolders.length === 0) {
-        alert("No folders selected to share.");
-        return;
-    }
-
-    const folderUrls = selectedFolders.map(folder => `note.html?folder=${encodeURIComponent(folder)}`).join('\n');
-    const shareMessage = `Check out these folders:\n${folderUrls}`;
-            document.getElementById("shareMessage").value = shareMessage;
-
-            // Show the share dialog
-            document.getElementById("shareDialog").style.display = "block";
-            document.getElementById("overlay").style.display = "block";
-        }
-
-        function closeShareDialog() {
-            document.getElementById("shareDialog").style.display = "none";
-            document.getElementById("overlay").style.display = "none";
-            document.getElementById("errorMessage").style.display = "none";
-        }
-
-        function copyToClipboard() {
-            const textarea = document.getElementById("shareMessage");
-            textarea.select();
-            document.execCommand('copy');
-            alert('Share message copied to clipboard!');
-        }
-
-        function shareViaEmail() {
-            const shareMessage = document.getElementById("shareMessage").value;
-            const subject = "Check out these folders";
-            const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(shareMessage)}`;
-            window.location.href = mailtoLink;
-        }
-
-        function sendToUser () {
-            const selectedUser  = document.getElementById("userInput").value; // Get value from input field
-            const shareMessage = document.getElementById("shareMessage").value;
-
-            // Validate the user
-            if (!selectedUser ) {
-                alert("Please enter a user name to send the folders to.");
-                return;
-            }
-
-            if (!validUsers.includes(selectedUser )) {
-                document.getElementById("errorMessage").innerText = "Error: Invalid user. Please enter a valid user name.";
-                document.getElementById("errorMessage").style.display = "block";
-                return;
-            }
-
-            // Here you would typically send the message to the backend server
-            // For demonstration, we'll just log it to the console
-            console.log(`Sending to ${selectedUser }: ${shareMessage}`);
-            alert(`Folders shared with ${selectedUser }!`);
-
-            // Simulate notifying the user that they have received the email
-            alert(`Notification: ${selectedUser } has been notified via email about the shared folders.`);
-
-            // Optionally, you can clear the input and message after sending
-            document.getElementById("userInput").value = "";
-            document.getElementById("shareMessage").value = "";
-            closeShareDialog();
-        }
-    </script>
+    <!-- Add this modal dialog to your HTML -->
+<div id="noteModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeNoteModal()">&times;</span>
+        <h2>Add Note</h2>
+        <input type="text" id="noteInput" placeholder="Enter note name" />
+        <button onclick="submitNote()">Add Note</button>
+    </div>
+</div>
+    <script src="mobile.js"></script>
 </body>
 </html>
