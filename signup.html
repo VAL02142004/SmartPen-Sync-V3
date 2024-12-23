@@ -48,21 +48,88 @@
         }
         .back-button {
             margin-top: 10px;
-            cursor: pointer; border: none; border-radius: 5px; padding: 10px 20px 10px 20px; background-color: #f28b82; color: white;
+            cursor: pointer; 
+            border: none; 
+            border-radius: 5px; 
+            padding: 10px 20px; 
+            background-color: #f28b82; 
+            color: white;
+        }
+        /* Modal styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px; 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px; 
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <form id="register-form" class="signup-container">
         <img alt="Logo with a pencil and text 'SMARTPEN SYNC' with a tagline 'Write Your Story'" height="100" src="asset/SMARTPEN_SYNC-removebg-preview 1 (1).png" width="300"/>
-        <input id="email" placeholder="Email" type="email" required/>
-        <input id="username" placeholder="Username" type="text" required/>
-        <input id="password" placeholder="Password" type="password" required/>
-        <input id="confirm-password" placeholder="Confirm Password" type="password" required/>
-        <input id="contact" placeholder="Contact" type="text" required/>
-        <button type="submit">Sign up</button>
-        <button type="button" class="back-button" onclick="goToLogin()">Back to Login</button>
+        
+        <div class="input-group">
+            <label for="email">Email:</label>
+            <input id="email" placeholder="Email" type="email" required/>
+        </div>
+        
+        <div class="input-group">
+            <label for="contact">Contact:</label>
+            <input id="contact" placeholder="Contact" type="text" required/>
+        </div>
+        
+        <div class="input-group">
+            <label for="username">Username:</label>
+            <input id="username" placeholder="Username" type="text" required/>
+        </div>
+        
+        <div class="input-group">
+            <label for="password">Password:</label>
+            <input id="password" placeholder="Password" type="password" required/>
+        </div>
+        
+        <div class="input-group">
+            <label for="confirm-password">Confirm Password:</label>
+            <input id="confirm-password" placeholder="Confirm Password" type="password" required/>
+        </div>
+        
+        <button type="submit">Sign Up</button> <!-- Sign Up button -->        <button type="button" class="back-button" onclick="goToLogin()">Back to Login</button>
     </form>
+
+    <!-- Modal for Feedback -->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalMessage"></h2>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
 
     <script>
         document.getElementById("register-form").addEventListener("submit", function (event) {
@@ -75,34 +142,32 @@
             var contact = document.getElementById("contact").value;
 
             function checkPasswordsMatch() {
-                if (password !== confirmPassword) {
-                    alert("Passwords do not match!");
-                    return false;
-                }
-                return true;
+                return password === confirmPassword;
             }
 
             function checkPasswordStrength(password) {
-                const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                // Updated password strength requirements
+                const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/; // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
                 return regex.test(password);
             }
 
             if (!checkPasswordsMatch()) {
-                return false;
+                showModal("Passwords do not match!");
+                return;
             }
 
             if (!checkPasswordStrength(password)) {
-                alert("Please create a strong password with at least 8 characters including uppercase, lowercase, numbers, and special characters.");
-                return false;
+                showModal("Please create a strong password with at least 8 characters, including uppercase, lowercase, and numbers.");
+                return;
             }
 
             // Create an array if it doesn't exist, otherwise append to existing array
             let users = JSON.parse(localStorage.getItem("RegisteredUsers")) || [];
 
             // Check if the username already exists
-            const existingUser  = users.find(user => user.username === username);
+            const existingUser   = users.find(user => user.username === username);
             if (existingUser ) {
-                alert("Username already exists. Please choose a different username.");
+                showModal("Username already exists. Please choose a different username.");
                 return;
             }
 
@@ -119,13 +184,32 @@
             // Store the updated array in localStorage
             localStorage.setItem("RegisteredUsers", JSON.stringify(users));
 
-            alert("Registration successful! Please login.");
-            window.location.href = "index.html"; // Redirect to the login page
+            showModal("Registration successful! Please login.");
+            setTimeout(() => {
+                window.location.href = "index.html"; // Redirect to the login page
+            }, 2000); // Redirect after 2 seconds
         });
 
         function goToLogin() {
             // Redirect to the login page
             window.location.href = "index.html"; // Change 'index.html' to the actual path of your login page
+        }
+
+        function showModal(message) {
+            document.getElementById("modalMessage").innerText = message;
+            document.getElementById("feedbackModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("feedbackModal").style.display = "none";
+        }
+
+        // Close the modal when the user clicks anywhere outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('feedbackModal');
+            if (event.target === modal) {
+                closeModal();
+            }
         }
     </script>
 </body>

@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartPen Sync - Login</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -10,6 +13,41 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px; 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px; 
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: Arial, sans-serif; background-color: #fff;">
     <div class="container" style="text-align: center;">
@@ -23,41 +61,76 @@
             <input id="password" name="password" type="password" style="width: calc(100% - 20px); padding: 10px; margin-bottom: 20px; border: 2px solid #f28b82; border-radius: 5px; font-size: 16px;"/>
             <div>
                 <button onclick="login()" type="button" style="width: 45%; padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Login</button>
-                <button onclick="signUp()" type="button" style="width: 45%; padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Sign Up</button>
+                <button onclick="signUp()" type="button" style="width: 45%; padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer                ">Sign Up</button>
             </div>
             <div style="margin-top: 10px;">
-                <button onclick="forgot()" type="button" style="width: 100%; padding: 10px; margin-top: 10px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Forgot Username/Password?</button>
+                <button onclick="openEmailModal()" type="button" style="width: 100%; padding: 10px; margin-top: 10px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Forgot Password?</button>
             </div>
         </div>
     </div>
+
+    <!-- Modal for Email Verification -->
+    <div id="emailModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 style="color: #f28b82;">Verify Your Email</h2>
+            <label for="email" style="display: block; margin-bottom: 10px;">Enter your email:</label>
+            <input id="email" type="email" style="width: calc(100% - 20px); padding: 10px; margin-bottom: 20px; border: 2px solid #f28b82; border-radius: 5px; font-size: 16px;"/>
+            <button onclick="verifyEmail()" type="button" style="width: 100%; padding: 10px; border: none; border-radius: 5px; font-size: 16px; color: #fff; background-color: #f28b82; cursor: pointer;">Verify</button>
+        </div>
+    </div>
+
     <script>
         function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
             // Retrieve stored users from local storage
-            const storedUsers = JSON.parse(localStorage.getItem('RegisteredUsers')) || [];
+            const users = JSON.parse(localStorage.getItem('RegisteredUsers')) || [];
 
-                // Check if the username and password match any stored user
-                const user = storedUsers.find(user => user.username === username && user.password === password);
-                const newpassword = storedUsers.find(user =>  user.newPassword === password);
-if (user ||newpassword ) {
-    // Redirect to the dashboard page
-    window.location.href = 'dashboard.html'; // Change 'dashboard.html' to the actual path of your dashboard page
-} else {
-    alert('Invalid username or password. Please try again.');
-}
-}
+            // Check if the username and password match any stored user
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                // Redirect to the dashboard page
+                sessionStorage.setItem('username', username); // Store the username in session storage
+                window.location.href = 'dashboard.html'; // Change 'dashboard.html' to the actual path of your dashboard page
+            } else {
+                alert('Invalid username or password. Please try again.');
+            }
+        }
 
-function signUp() {
-// Redirect to the sign-up page
-window.location.href = 'signup.html'; // Change 'signup.html' to the actual path of your sign-up page
-}
+        function signUp() {
+            // Redirect to the sign-up page
+            window.location.href = 'signup.html'; // Change 'signup.html' to the actual path of your sign-up page
+        }
 
-function forgot() {
-// Redirect to the forgot password page
-window.location.href = 'forgot.html'; // Change 'forgot.html' to the actual path of your forgot password page
-}
-</script>
+        function openEmailModal() {
+            document.getElementById('emailModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('emailModal').style.display = "none";
+        }
+
+        function verifyEmail() {
+            const email = document.getElementById('email').value;
+
+            // Here you can add your email verification logic
+            // For demonstration, we'll just alert the email and close the modal
+            alert(`Verification link sent to: ${email}`);
+            closeModal();
+            // Redirect to the password reset page after email verification
+            window.location.href = 'reset-password.html'; // Change 'reset-password.html' to the actual path of your reset password page
+        }
+
+        // Close the modal when the user clicks anywhere outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('emailModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 </html>
