@@ -1,7 +1,8 @@
 {
   "name": "smartpen-sync-v3",
   "version": "1.0.0",
-  "main": "app.js","scripts": {
+  "main": "app.js",
+  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,5 +13,11 @@
     "express": "^4.21.2",
     "socket.io": "^4.8.1",
     "ws": "^8.18.0"
+  },
+  "buttonStates": {
+    "Share File": "enable",
+    "Offline": "disable",
+    "Data Privacy": "enable",
+    "Tag & Comment": "disable"
   }
 }

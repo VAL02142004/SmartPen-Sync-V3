@@ -92,7 +92,7 @@
 </head>
 <body>
     <form id="register-form" class="signup-container">
-        <img alt="Logo with a pencil and text 'SMARTPEN SYNC' with a tagline 'Write Your Story'" height="100" src="asset/SMARTPEN_SYNC-removebg-preview 1 (1).png" width="300"/>
+        <img alt="Logo" height="100" src="asset/SMARTPEN_SYNC-removebg-preview 1 (1).png" width="300"/>
         
         <div class="input-group">
             <label for="email">Email:</label>
@@ -119,7 +119,8 @@
             <input id="confirm-password" placeholder="Confirm Password" type="password" required/>
         </div>
         
-        <button type="submit">Sign Up</button> <!-- Sign Up button -->        <button type="button" class="back-button" onclick="goToLogin()">Back to Login</button>
+        <button type="submit">Sign Up</button>
+        <button type="button" class="back-button" onclick="goToLogin()">Back to Login</button>
     </form>
 
     <!-- Modal for Feedback -->
@@ -133,7 +134,7 @@
 
     <script>
         document.getElementById("register-form").addEventListener("submit", function (event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent default form submission
 
             var username = document.getElementById("username").value;
             var email = document.getElementById("email").value;
@@ -165,7 +166,7 @@
             let users = JSON.parse(localStorage.getItem("RegisteredUsers")) || [];
 
             // Check if the username already exists
-            const existingUser   = users.find(user => user.username === username);
+            const existingUser  = users.find(user => user.username === username);
             if (existingUser ) {
                 showModal("Username already exists. Please choose a different username.");
                 return;

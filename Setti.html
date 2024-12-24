@@ -1,16 +1,15 @@
+<!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   Mobile App Interface
-  </title>
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <style>
-   body {
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mobile App Interface</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <style>
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -102,171 +101,141 @@
             cursor: pointer;
             font-size: 14px; /* Adjusted font size */
             width: 100%; /* Full width for footer button */
-        } .enable.active, .disable.active {
-    border: 2px solid #E27D60; /* Optional: Add a border to indicate active state */
-}
-@media only screen and (max-width: 480px) {
-          .container {
-              max-width: 100%;
-              max-height: 100%;
-              border-radius: 10px;
-          }
-          .header img, .footer button {
-              width: 40px;
-              height: 40px;
-          }
-          .content .item .label {
-              font-size: 14px;
-              padding: 5px 8px;
-          }
-          .content .item button {
-              padding: 4px 8px;
-              font-size: 11px;
-          }
-      }
-  </style>
-  <script>
-function toggleButtons(item, enable) {
-    const enableButton = item.querySelector('.enable');
-    const disableButton = item.querySelector('.disable');
+        }
+        .enable.active, .disable.active {
+            border: 2px solid #E27D60; /* Optional: Add a border to indicate active state */
+        }
+        @media only screen and (max-width: 480px) {
+            .container {
+                max-width: 100%;
+                max-height: 100%;
+                border-radius: 10px;
+            }
+            .header img, .footer button {
+                width: 40px;
+                height: 40px;
+            }
+            .content .item .label {
+                font-size: 14px;
+                   padding: 5px 8px;
+            }
+            .content .item button {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+        }
+    </style>
+    <script>
+        // Function to toggle buttons and save the state
+        function toggleButtons(item, enable) {
+            const enableButton = item.querySelector('.enable');
+            const disableButton = item.querySelector('.disable');
+            const label = item.querySelector('.label').textContent.trim(); // Get the label text
 
-    // Save the state in localStorage
-    localStorage.setItem('buttonState', enable ? 'enable' : 'disable');
+            // Remove active class from both buttons
+            enableButton.classList.remove('active');
+            disableButton.classList.remove('active');
 
-    // Remove active class from both buttons
-    enableButton.classList.remove('active');
-    disableButton.classList.remove('active');
+            if (enable) {
+                enableButton.classList.add('active');
+                enableButton.style.backgroundColor = '#E27D60';
+                enableButton.style.color = '#fff';
+                disableButton.style.backgroundColor = '#fff';
+                disableButton.style.color = '#E27D60';
+            } else {
+                disableButton.classList.add('active');
+                enableButton.style.backgroundColor = '#fff';
+                enableButton.style.color = '#E27D60';
+                disableButton.style.backgroundColor = '#E27D60';
+                disableButton.style.color = '#fff';
+            }
 
-    if (enable) {
-        enableButton.classList.add('active');
-        enableButton.style.backgroundColor = '#E27D60';
-        enableButton.style.color = '#fff';
-        disableButton.style.backgroundColor = '#fff';
-        disableButton.style.color = '#E27D60';
-    } else {
-        disableButton.classList.add('active');
-        enableButton.style.backgroundColor = '#fff';
-        enableButton.style.color = '#E27D60';
-        disableButton.style.backgroundColor = '#E27D60';
-        disableButton.style.color = '#fff';
-    }
-}
+            // Save the state in localStorage
+            const savedStates = JSON.parse(localStorage.getItem('buttonStates')) || {};
+            savedStates[label] = enable ? 'enable' : 'disable';
+            localStorage.setItem('buttonStates', JSON.stringify(savedStates));
+        }
 
-function initializeButtonState(item) {
-    const savedState = localStorage.getItem('buttonState');
-    if (savedState === 'enable') {
-        toggleButtons(item, true);
-    } else {
-        toggleButtons(item, false);
-    }
-}
+        // Function to initialize button states on page load
+        function initializeButtonStates() {
+            const savedStates = JSON.parse(localStorage.getItem('buttonStates')) || {};
+            const items = document.querySelectorAll('.item');
 
-// Call this function when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    const item = document.querySelector('.button-container'); // Change this selector to your actual button container
-    initializeButtonState(item);
-});
+            items.forEach(item => {
+                const label = item.querySelector('.label').textContent.trim();
+                const savedState = savedStates[label];
 
-// Function to check profile
-function checkProfile() {
-    // Redirect to the profile page
-    window.location.href = 'profile.html'; // Change this URL to your actual profile page URL
-}
+                if (savedState === 'enable') {
+                    toggleButtons(item, true);
+                } else if (savedState === 'disable') {
+                    toggleButtons(item, false);
+                }
+            });
+        }
 
-// Function to logout
-function logout() {
-    // Redirect to the login page
-    window.location.href = 'index.html'; // Change this URL to your actual login page URL
-}
+        // Function to check profile
+        function checkProfile() {
+            window.location.href = 'profile.html'; // Change this URL to your actual profile page URL
+        }
 
-// Function to go home
-function goHome() {
-    // Redirect to the dashboard
-    window.location.href = 'dashboard.html'; // Change this URL to your actual dashboard page URL
-}
+        // Function to logout
+        function logout() {
+            window.location.href = 'index.html'; // Change this URL to your actual login page URL
+        }
 
-// Function to handle the home button click
-document.querySelector('.home-button').addEventListener('click', function() {
-    // Optionally, you can also save the state or perform other actions here
-    // For example, you can log the current state
-    console.log('Current button state:', localStorage.getItem('buttonState'));
-    goHome(); // Call the goHome function to navigate
-});
-  </script>
- </head>
- <body>
-  <div class="container">
-   <div class="header">
-    <img src="asset/Home (1).png" alt="Home icon" height="25" onclick="goHome()" src="https://storage.googleapis.com/a1aa/image/shAlePpt3vUgWKOk9OdkLmJT6FVOcAV13wvfbamzVS0lFW2TA.jpg" width="25"/>
-    <img src="asset/Settings (1).png" alt="Settings icon" height="25" src="https://storage.googleapis.com/a1aa/image/aIeP5A0X2swGLaPlJwPlyOJXpV3uaJegea3dn2996ENJLssnA.jpg" width="25"/>
-   </div>
-   <div class="content">
-    <div class="item">
-     <div class="label">
-      Profile
-     </div>
-     <button onclick="checkProfile()">
-      Check
-     </button>
-    </div>
-    <div class="item">
-     <div class="label">
-      Share File
-     </div>
-     <div class="buttons">
-      <button class="enable" onclick="toggleButtons(this.parentElement.parentElement, true)">
-       Enable
-      </button>
-      <button class="disable" onclick="toggleButtons(this.parentElement.parentElement, false)">
-       Disable
-      </button>
-     </div>
-    </div>
-    <div class="item">
-     <div class="label">
-      Offline
-     </div>
-     <div class="buttons">
-      <button class="enable" onclick="toggleButtons(this.parentElement.parentElement, true)">
-       Enable
-      </button>
-      <button class="disable" onclick="toggleButtons(this.parentElement.parentElement, false)">
-       Disable
-      </button>
-     </div>
-    </div>
-    <div class="item">
-     <div class="label">
-      Data Privacy
-     </div>
-     <div class="buttons">
-      <button class="enable" onclick="toggleButtons(this.parentElement.parentElement, true)">
-       Enable
-      </button>
-      <button class="disable" onclick="toggleButtons(this.parentElement.parentElement, false)">
-       Disable
-      </button>
-     </div>
-    </div>
-    <div class="item">
-     <div class="label">
-      Tag &amp; Comment
-     </div>
-     <div class="buttons">
-      <button class="enable" onclick="toggleButtons(this.parentElement.parentElement, true)">
-       Enable
-      </button>
-      <button class="disable" onclick="toggleButtons(this.parentElement.parentElement, false)">
-       Disable
-      </button>
-     </div>
-    </div>
-   </div>
-   <div class="footer">
-    <button style="width: 100px"; onclick="logout()">
-     Log Out
-    </button>
-   </div>
-  </div>
- </body>
-</html>
+        // Function to go home
+        function goHome() {
+            window.location.href = 'dashboard.html'; // Change this URL to your actual dashboard page URL
+        }
+
+        // Initialize states on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeButtonStates();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="asset/Home (1).png" alt="Home icon" height="25" onclick="goHome()"/>
+            <img src="asset/Settings (1).png" alt="Settings icon" height="25"/>
+        </div>
+        <div class="content">
+            <div class="item">
+                <div class="label">Profile</div>
+                <button onclick="checkProfile()">Check</button>
+            </div>
+            <div class="item">
+                <div class="label">Share File</div>
+                <div class="buttons">
+                    <button class="enable" onclick="toggleButtons(this.parentElement.parentElement, true)">Enable</button>
+                    <button class="disable" onclick="toggleButtons(this.parentElement.parentElement, false)">Disable</button>
+                </div>
+            </div>
+            <div class="item">
+                <div class="label">Offline</div>
+                <div class="buttons">
+                    <button class="enable" onclick="toggleButtons(this.parentElement.parentElement, true)">Enable</button>
+                    <button class="disable" onclick="toggleButtons(this.parentElement.parentElement, false)">Disable</button>
+                </div>
+            </div>
+            <div class="item">
+                <div class="label">Data Privacy</div>
+                <div class="buttons">
+                    <button class="enable" onclick="toggleButtons(this.parentElement.parentElement, true)">Enable</button>
+                    <button class="disable" onclick="toggleButtons(this.parentElement.parentElement, false)">Disable</button>
+                </div>
+            </div>
+            <div class="item">
+                <div class="label">Tag & Comment</div>
+                <div class="buttons">
+                    <button class="enable" onclick="toggleButtons(this.parentElement.parentElement, true)">Enable</button>
+                    <button class="disable" onclick="toggleButtons(this.parentElement.parentElement, false)">Disable</button>
+                </div>
+            </div>
+            <div class="footer">
+                <button style="width: 100px;" onclick="logout()">Log Out</button>
+            </div>
+        </div>
+    </body>
+    </html>
